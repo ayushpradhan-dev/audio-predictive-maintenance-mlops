@@ -73,7 +73,7 @@ def create_dataloaders(
     return train_loader, validation_loader, class_to_idx
 
 
-# Block below allows the script to be run directly for testing
+# Block to test the script
 if __name__ == '__main__':
     # Define test parameters
     DATA_DIR = '../data/processed/fan'
