@@ -1,3 +1,4 @@
+# src/model.py
 import torch
 import torch.nn as nn
 from torchvision import models
@@ -74,29 +75,30 @@ class SpectrogramResNet(nn.Module):
             nn.Linear(self.num_features // 2, num_classes)
         )
 
-        def forward(self, x):
-            """
-            Defines the forward pass of the mode.
-            """
-            # Extract features from backbone
-            # Input x shape: [batch_size, 3, 224, 224]
-            # Output features shape: [batch_size, 2048, 7, 7]
-            features = self.backbone(x)
+    def forward(self, x):
+         
+         """
+         Defines the forward pass of the mode.
+         """
+         # Extract features from backbone
+         # Input x shape: [batch_size, 3, 224, 224]
+         # Output features shape: [batch_size, 2048, 7, 7]
+         features = self.backbone(x)
 
-            # Apply attention pooling
-            # Output pooled_features shape: [batch_size, 2048]
-            pooled_features = self.pool(features)
+         # Apply attention pooling
+         # Output pooled_features shape: [batch_size, 2048]
+         pooled_features = self.pool(features)
 
-            # Get final classification scores (logits)
-            # Output logits shape: [batch_size, 1]
-            logits = self.classifier(pooled_features)
+         # Get final classification scores (logits)
+         # Output logits shape: [batch_size, 1]
+         logits = self.classifier(pooled_features)
 
-            # For binary classification with BCEWithLogitsLoss, want a squeezed output
-            # Output shape: [batch_size]
-            return logits.squeeze(-1)
+         # For binary classification with BCEWithLogitsLoss, want a squeezed output
+         # Output shape: [batch_size]
+         return logits.squeeze(-1)
 
 
-# Block to test cript
+# Block to test script
 if __name__ == '__main__':
     # Create a dummy input tensor to test the model
     dummy_input = torch.randn(4, 3, 224, 224) # (batch_size, channels, height, width)
