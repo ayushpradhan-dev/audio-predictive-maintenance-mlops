@@ -1,0 +1,24 @@
+name: audio-mlops
+
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.9.23
+  # Conda packages
+  - pytorch
+  - torchvision
+  - torchaudio
+  - jupyterlab
+  - librosa
+  - matplotlib
+  - pandas
+  - scikit-learn
+  - tqdm
+  # Pip packages
+  - pip
+  - pip:
+    - conda-lock
+    

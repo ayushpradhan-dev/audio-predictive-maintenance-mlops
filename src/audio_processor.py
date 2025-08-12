@@ -5,7 +5,7 @@ from tqdm.auto import tqdm
 from pathlib import Path
 import numpy as np
 import pandas as pd
-
+from data_loader import load_fan_data
 
 def save_spectrogram(spectrogram_data, file_path):
     """Saves a spectrogram numpy array as a PNG image file."""
@@ -71,3 +71,22 @@ def process_and_save_spectrograms(fan_df: pd.DataFrame, output_dir: str):
 
         # Save the spectrogram image using helper function save_spectrogram
         save_spectrogram(db_spectrogram, final_file_path)
+
+
+if __name__ == '__main__':
+    # Define the project root and I/O directories
+    project_root = Path(__file__).parent.parent
+    DATA_DIR = project_root / 'data' / 'fan'
+    OUTPUT_DIR = project_root / 'data' / 'processed' / 'fan'
+    
+    print(f"Loading data from: {DATA_DIR}")
+    
+    # Load the full dataframe of all audio file paths
+    full_fan_df = load_fan_data(DATA_DIR)
+    
+    if full_fan_df.empty:
+        print(f"\n[ERROR] No data found in {DATA_DIR}. Please check the path and data setup instructions.")
+    else:
+        # Run the main processing function
+        process_and_save_spectrograms(fan_df=full_fan_df, output_dir=OUTPUT_DIR)
+        print(f"\nTraining/validation images created successfully in '{OUTPUT_DIR}'")
