@@ -37,7 +37,21 @@ def create_logo_dataloaders(
 
     # Load full dataset using ImageFolder with applied transformations
     full_dataset = datasets.ImageFolder(data_dir, transform=data_transforms)
-    class_to_idx = full_dataset.class_to_idx
+
+    # Create the correct class mapping and override the dataset's labels.
+    correct_class_to_idx = {'abnormal': 0, 'normal': 1}
+    corrected_samples = []
+    for path, _ in full_dataset.samples: # Ignore the incorrect label
+        if 'abnormal' in path:
+            label = correct_class_to_idx['abnormal']
+        else:
+            label = correct_class_to_idx['normal']
+        corrected_samples.append((path, label))
+    
+    # Manually override the dataset's internal state
+    full_dataset.samples = corrected_samples
+    full_dataset.targets = [s[1] for s in corrected_samples]
+    full_dataset.class_to_idx = correct_class_to_idx
 
     # Find indices for the specified test fan
     # 'samples' is a list of (filepath, class_index)
@@ -71,4 +85,4 @@ def create_logo_dataloaders(
     validation_loader = DataLoader(validation_dataset, batch_size=batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-    return train_loader, validation_loader, test_loader, class_to_idx
+    return train_loader, validation_loader, test_loader, correct_class_to_idx

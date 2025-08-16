@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 from model import SpectrogramResNet
-from data_setup import create_dataloaders
+from data_setup import create_logo_dataloaders
 
 
 class EarlyStopping:
@@ -99,14 +99,15 @@ def val_step(model, dataloader, loss_fn, device):
     return avg_loss, accuracy, precision, recall, f1
 
 
-def train(config):
-    """Main training function."""
+def train(config: dict, test_fan_id: str):
+    """Main training function for a single LOGO fold"""
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"Using device: {device}")
+    print(f"\n--- Training Fold | Test Fan: {test_fan_id} | Device: {device} ---")
 
-    # Create DataLoaders
-    train_loader, val_loader, class_to_idx = create_dataloaders(
+    # Create DataLoaders for the current fold
+    train_loader, val_loader, _, class_to_idx = create_logo_dataloaders(
         data_dir=config["data_dir"],
+        test_fan_id=test_fan_id,
         image_size=config["image_size"],
         batch_size=config["batch_size"]
     )
@@ -114,20 +115,28 @@ def train(config):
     # Instantiate model
     model = SpectrogramResNet(num_classes=1, dropout_rate=config["dropout_rate"]).to(device)
     
-    # Calculate class weights for the loss function
-    # Training set has 1152 samples: 826 normal, 326 abnormal
-    weight_for_abnormal = 1152 / (2 * 326) 
+    # Dynamically calculate class weights for the current fold
+    # Get the labels from the training subset
+    train_labels = [train_loader.dataset.dataset.targets[i] for i in train_loader.dataset.indices]
+    num_abnormal = sum(1 for label in train_labels if label == class_to_idx['abnormal'])
+    num_normal = len(train_labels) - num_abnormal
+    weight_for_abnormal = num_normal / num_abnormal
+
+    print(f"[INFO] Abnormal weight for this fold: {weight_for_abnormal:.2f}")
     pos_weight_tensor = torch.tensor([weight_for_abnormal], device=device)
     loss_fn = nn.BCEWithLogitsLoss(pos_weight=pos_weight_tensor)
     
     # Setup optimizer
     optimizer = torch.optim.Adam(model.parameters(), lr=config["learning_rate"])
 
-    scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True)
+    # Use unique model path for each fold
+    model_dir = Path(config["model_dir"])
+    model_dir.mkdir(parents=True, exist_ok=True)
+    model_path = model_dir / f"best_model_test{test_fan_id}.pth"
 
-    # Setup EarlyStopping
-    Path("models").mkdir(parents=True, exist_ok=True)
-    early_stopper = EarlyStopping(patience=config["patience"], verbose=True, path=config["model_path"])
+    early_stopper = EarlyStopping(patience=config["patience"], verbose=True, path=model_path)
+
+    scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True)
 
     # Create a dictionary to store training history
     history = {
