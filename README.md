@@ -29,36 +29,37 @@ A final production model was trained on all available fan data with data augment
 
 The trained production model is served via a **FastAPI** application. The service exposes a single `/predict` endpoint that accepts a `.wav` audio file and returns a JSON response containing the predicted label ("normal" or "abnormal") and a confidence score.
 
-The image below shows a demo of the app, as it takes an uploaded wav file of a normally functioning fan of type `id_02` from the dataset, `(00000102.wav)`,  as input and returns a prediction that correctly classifies the example as "normal".
+The image below shows a demo of the app, as it takes an uploaded wav file of a normally functioning fan of type `id_02` from the dataset, `(00000102.wav)`, as input and returns a prediction that correctly classifies the example as "normal".
 
 <p align="center">
   <img src="docs/images/api_demo.png" alt="Screenshot of the FastAPI /docs page showing a successful prediction" width="800"/>
 </p>
 
-## Current Status: API Development Complete
+## Current Status: Containerization Complete
 
-The machine learning and local API development phases of this project are complete. The next steps focus on containerization and cloud deployment.
+The application is now fully containerized using Docker. This creates a portable, reproducible, and isolated environment for the API service, which is a critical step for cloud deployment.
 
 **Completed Milestones:**
 *   **LOGO Cross-Validation:** Completed a full 4-fold cross-validation to establish a robust, unbiased performance baseline.
 *   **Data Augmentation:** Implemented `SpecAugment` to solve the generalization challenge.
 *   **Production Model:** Trained a final, high-performance model (AUC 0.99) for deployment.
 *   **API Development:** Developed a robust FastAPI service to serve the production model.
+*   **Containerization:** Successfully containerized the application and all dependencies using **Docker**.
 *   **Artifact Versioning:** Successfully integrated Git LFS for versioning all large model and results files.
 
-**Next Steps: Deployment Pipeline**
-*   Containerize the service using **Docker**.
+**Next Steps: Cloud Deployment & Automation**
+The final phase of the project is to deploy the containerized application to the cloud and automate the entire process.
 *   Define cloud infrastructure on **Azure** using **Terraform**.
-*   Automate the entire build and deployment process with **GitHub Actions**.
+*   Automate the build and deployment process with **GitHub Actions**.
 
 ## Tech Stack
 
 -   **Data Analysis & Modeling:** PyTorch, Librosa, Scikit-learn, Pandas
 -   **API Development:** FastAPI, Uvicorn
--   **Containerization:** Docker (Planned)
--   **Infrastructure as Code:** Terraform
--   **Cloud Deployment:** Microsoft Azure
--   **CI/CD & Automation:** GitHub Actions
+-   **Containerization:** Docker
+-   **Infrastructure as Code:** Terraform (Planned)
+-   **Cloud Deployment:** Microsoft Azure (Planned)
+-   **CI/CD & Automation:** GitHub Actions (Planned)
 
 ## Getting Started
 
@@ -69,6 +70,7 @@ Follow these instructions to set up and run the project locally.
 -   Git
 -   Git LFS ([Install from here](https://git-lfs.github.com/))
 -   Conda for environment management
+-   Docker Desktop ([Install from here](https://www.docker.com/products/docker-desktop/))
 
 ### 1. Clone the Repository
 ```bash
@@ -84,7 +86,7 @@ git lfs pull
 ```
 
 ### 3. Create the Conda Environment
-This project uses `conda-lock` to create a byte-for-byte identical environment from the `conda-lock.yml` file, ensuring reproducibility.
+This step is required for local development and to run the data processing/training notebooks. The project uses `conda-lock` for reproducibility.
 ```bash
 # Create the environment from the lock file
 conda create --name audio-mlops --file conda-lock.yml
@@ -107,27 +109,45 @@ This project uses the **MIMII Dataset (6dB Fan subset)**, which is not tracked b
 
 ## Usage
 
-### 1. Process Raw Audio Data
-This script converts all raw `.wav` files into spectrogram images, creating a unified `data/processed/` directory. Run this once.
+There are two ways to run this application: using the pre-built Docker image (recommended) or running the source code locally for development.
+
+### 1. Run with Docker (Recommended)
+This is the fastest and easiest way to get the application running. It downloads the pre-built, ready-to-run container image from Docker Hub.
+
+**A) Pull the Image from Docker Hub:**
+```bash
+docker pull ayushpradhan24/audio-predictive-maintenance:latest
+```
+
+**B) Run the Docker Container:**
+This command starts the container and maps your local port 8000 to the container's port 8000.
+```bash
+docker run -p 8000:8000 ayushpradhan24/audio-predictive-maintenance:latest
+```
+Once running, you can access the interactive API documentation at `http://127.0.0.1:8000/docs`.
+
+---
+
+### 2. Local Development & Experiments
+This workflow is for users who want to modify the source code, run the data processing, or retrain the models.
+
+**A) Process Raw Audio Data:**
+This script converts all raw `.wav` files into spectrogram images. Run this once after setting up the data.
 ```bash
 python src/audio_processor.py
 ```
 
-### 2. Train Models (Optional)
-The project contains notebooks to reproduce the experiments:
-*   `notebooks/03-model-training-and-evaluation.ipynb`: Contains the full Leave-One-Group-Out (LOGO) cross-validation experiment. Run this to reproduce the baseline performance analysis.
-*   `notebooks/04-final-model-training.ipynb`: Trains the final, high-performance production model using data augmentation on the entire dataset. This produces the `production_model.pth` artifact used for deployment.
+**B) Run Experiments:**
+The project contains notebooks to reproduce the experiments in the `notebooks/` directory. You will need to create the Conda environment first (see Getting Started).
 
-### 3. Run the API Server Locally
-This command starts the FastAPI server using the pre-trained production model.
+**C) Run the API Server Locally:**
+This command starts the FastAPI server directly on your local machine.
 ```bash
 python src/main.py
 ```
-Once running, you can access the interactive API documentation at `http://127.0.0.1:8000/docs`.
 
 ## License
 This project is licensed under the MIT License.
 
 ## Acknowledgements
-This project uses the MIMII Dataset. Please cite the original authors if you use this data:
-> Harsh Purohit, Ryo Tanabe, Kenji Ichige, Takashi Endo, Yuki Nikaido, Kaori Suefusa, and Yohei Kawaguchi, "MIMII Dataset: Sound Dataset for Malfunctioning Industrial Machine Investigation and Inspection," in Proceedings of the 4th Workshop on Detection and Classification of Acoustic Scenes and Events (DCASE), 2019.
+This project uses the MIMII Dataset. Please cite the original authors if you use this data.
