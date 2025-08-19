@@ -1,0 +1,27 @@
+# Git and VS Code
+.git/
+.gitignore
+.gitattributes
+.vscode/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Local environment, data, and results
+/env/
+data/
+notebooks/
+results/
+
+# Docker and Conda definition files that are not needed in the final image
+# (after the environment is built)
+Dockerfile
+.dockerignore
+conda-lock.yml
+conda-win-64.lock
+conda-osx-64.lock
+conda-osx-arm64.lock
+environment.yml
+explicit-lock.txt
