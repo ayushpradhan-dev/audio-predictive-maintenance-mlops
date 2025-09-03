@@ -48,8 +48,8 @@ resource "azurerm_resource_group" "rg" {
 # Private Docker registry to store container image.
 resource "azurerm_container_registry" "acr" {
     name = var.acr_name
-    resource_group_name = azurerm_resources_group.rg.name
-    location = azurerm_resources_group.rg.location
+    resource_group_name = azurerm_resource_group.rg.name
+    location = azurerm_resource_group.rg.location
 
     sku = "Basic"
     admin_enabled = true
@@ -57,7 +57,7 @@ resource "azurerm_container_registry" "acr" {
 
 # Create Azure Container Instance (ACI)
 # Pulls image from ACR and run it as a public web service.
-resource "azurerm_container_instance" "aci" {
+resource "azurerm_container_group" "aci" {
     name = "aci-audio-mlops"
     resource_group_name = azurerm_resource_group.rg.name
     location = azurerm_resource_group.rg.location
@@ -92,5 +92,5 @@ resource "azurerm_container_instance" "aci" {
 # Output API URL
 # Print public URL of the running API
 output "api_url" {
-    value = "http://${azurerm_container_instance.aci.fqdn}:8000/docs"
+    value = "http://${azurerm_container_group.aci.fqdn}:8000/docs"
 }
