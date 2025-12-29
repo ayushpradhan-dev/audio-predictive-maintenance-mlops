@@ -63,7 +63,7 @@ The project has pivoted to a cloud-native AWS Serverless architecture to optimiz
 
 ## Getting Started
 
-Follow these instructions to set up and run the project locally.
+Follow these instructions to set up and run the project locally if desired, skip ahead to usage if you only want to use the application.
 
 ### Prerequisites
 
@@ -90,10 +90,13 @@ git lfs pull
 ### 3. Create the Conda Environment
 This step is required for local development and to run the data processing/training notebooks. The project uses `conda-lock` for reproducibility.
 ```bash
-# Create the environment from the lock file
-conda create --name audio-mlops --file conda-lock.yml
+# Install the tool if you don't have it
+pip install conda-lock
 
-# Activate the named environment
+# Create the environmnet "audio-mlops"
+conda-lock install -n audio-mlops conda-lock.yml
+
+# Activate the environment
 conda activate audio-mlops
 ```
 
