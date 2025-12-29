@@ -15,6 +15,7 @@ import torchaudio.transforms as T
 import uvicorn
 from pathlib import Path
 
+from magnum import Magnum
 
 # Setup
 # Create the FastAPI app
@@ -109,3 +110,5 @@ async def predict(file: UploadFile = File(...)):
 # Run the app directly using `python src/main.py`
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+handler = Magnum(app)
