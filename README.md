@@ -25,9 +25,9 @@ The key to improving generalization was identified as a lack of variety in the t
 ### 3. Production Model Performance
 A final production model was trained on all available fan data with data augmentation enabled. This model demonstrated excellent performance on its validation set, achieving an **AUC of 0.99** and a near-perfect precision, indicating an extremely low false-alarm rate. This is the model that will be used for deployment.
 
-## API Service
+## API Service & Serverless Architecture
 
-The trained production model is served via a **FastAPI** application. The service exposes a single `/predict` endpoint that accepts a `.wav` audio file and returns a JSON response containing the predicted label ("normal" or "abnormal") and a confidence score.
+The trained production model is served via a **FastAPI** application wrapped in a **Mangum** adapter, allowing it to run as a serverless function on AWS Lambda. The service exposes a single `/predict` endpoint that accepts a `.wav` audio file and returns a JSON response containing the predicted label ("normal" or "abnormal") and a confidence score.
 
 The image below shows a demo of the app, as it takes an uploaded wav file of a normally functioning fan of type `id_02` from the dataset, `(00000102.wav)`, as input and returns a prediction that correctly classifies the example as "normal".
 
@@ -35,35 +35,35 @@ The image below shows a demo of the app, as it takes an uploaded wav file of a n
   <img src="docs/images/api_demo.png" alt="Screenshot of the FastAPI /docs page showing a successful prediction" width="800"/>
 </p>
 
-## Current Status: Containerization Complete
+## Current Status: AWS Migration & Infrastructure
 
-The application is now fully containerized using Docker. This creates a portable, reproducible, and isolated environment for the API service, which is a critical step for cloud deployment.
+The project has pivoted to a cloud-native AWS Serverless architecture to optimize for cost and scalability. The application container is being prepared for deployment to AWS Lambda via Amazon ECR.
 
 **Completed Milestones:**
 *   **LOGO Cross-Validation:** Completed a full 4-fold cross-validation to establish a robust, unbiased performance baseline.
 *   **Data Augmentation:** Implemented `SpecAugment` to solve the generalization challenge.
-*   **Production Model:** Trained a final, high-performance model (AUC 0.99) for deployment.
-*   **API Development:** Developed a robust FastAPI service to serve the production model.
-*   **Containerization:** Successfully containerized the application and all dependencies using **Docker**.
-*   **Artifact Versioning:** Successfully integrated Git LFS for versioning all large model and results files.
+*   **Production Model:** Trained a final, high-performance model (AUC 0.99).
+*   **Containerization:** Successfully containerized the application using **Docker**.
+*   **Serverless Adaptation:** Integrated `Mangum` adapter to enable FastAPI execution within AWS Lambda.
+*   **Infrastructure as Code (AWS):** Initiated Terraform code for AWS resources, starting with Amazon ECR and Lifecycle Policies.
 
 **Next Steps: Cloud Deployment & Automation**
-The final phase of the project is to deploy the containerized application to the cloud and automate the entire process.
-*   Define cloud infrastructure on **Azure** using **Terraform**.
-*   Automate the build and deployment process with **GitHub Actions**.
+*   Provision AWS Lambda and API Gateway using **Terraform**.
+*   Configure **GitHub Actions** to automate the build-and-push workflow to Amazon ECR.
+*   Finalize the end-to-end CI/CD pipeline for automated model deployment.
 
 ## Tech Stack
 
 -   **Data Analysis & Modeling:** PyTorch, Librosa, Scikit-learn, Pandas
--   **API Development:** FastAPI, Uvicorn
+-   **API Development:** FastAPI, Uvicorn, Mangum (AWS Adapter)
 -   **Containerization:** Docker
--   **Infrastructure as Code:** Terraform (Planned)
--   **Cloud Deployment:** Microsoft Azure (Planned)
--   **CI/CD & Automation:** GitHub Actions (Planned)
+-   **Infrastructure as Code:** Terraform
+-   **Cloud Provider:** AWS (Lambda, ECR, API Gateway)
+-   **CI/CD & Automation:** GitHub Actions
 
 ## Getting Started
 
-Follow these instructions to set up and run the project locally.
+Follow these instructions to set up and run the project locally if desired, skip ahead to usage if you only want to use the application.
 
 ### Prerequisites
 
@@ -71,6 +71,8 @@ Follow these instructions to set up and run the project locally.
 -   Git LFS ([Install from here](https://git-lfs.github.com/))
 -   Conda for environment management
 -   Docker Desktop ([Install from here](https://www.docker.com/products/docker-desktop/))
+-   AWS CLI (Configured with credentials)
+-   Terraform
 
 ### 1. Clone the Repository
 ```bash
@@ -88,10 +90,13 @@ git lfs pull
 ### 3. Create the Conda Environment
 This step is required for local development and to run the data processing/training notebooks. The project uses `conda-lock` for reproducibility.
 ```bash
-# Create the environment from the lock file
-conda create --name audio-mlops --file conda-lock.yml
+# Install the tool if you don't have it
+pip install conda-lock
 
-# Activate the named environment
+# Create the environmnet "audio-mlops"
+conda-lock install -n audio-mlops conda-lock.yml
+
+# Activate the environment
 conda activate audio-mlops
 ```
 
