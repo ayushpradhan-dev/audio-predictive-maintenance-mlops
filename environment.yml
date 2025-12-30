@@ -9,6 +9,7 @@ dependencies:
   - python=3.9.23
   # Conda packages
   - pytorch
+  - cpuonly
   - torchvision
   - torchaudio
   - jupyterlab
@@ -24,3 +25,4 @@ dependencies:
     - fastapi
     - uvicorn
     - python-multipart
+    - mangum
