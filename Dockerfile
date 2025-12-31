@@ -34,5 +34,9 @@ COPY ./models /app/models
 # Expose the port.
 EXPOSE 8000
 
-# The command to start the server, pointing to the Python in the copied environment.
-CMD ["/opt/conda/envs/audio-mlops/bin/python", "src/main.py"]
+# Set the ENTRYPOINT to the AWS Lambda Runtime Interface Client (RIC)
+# tells the container to act like a lambda function.
+ENTRYPOINT ["/opt/conda/envs/audio-mlops/bin/python", "-m", "awslambdaric"]
+
+# Set the CMD to the path of the Mangum handler.
+CMD ["src.main.handler"]

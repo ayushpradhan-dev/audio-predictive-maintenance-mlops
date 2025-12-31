@@ -1,4 +1,4 @@
-# providers.terraform
+# terraform/providers.tf
 
 provider "aws" {
   region = var.aws_region

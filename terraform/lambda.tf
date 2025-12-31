@@ -1,3 +1,5 @@
+# terraform/api_gateway.tf
+
 # IAM role for lambda, allows lambda to assume identity
 resource "aws_iam_role" "lambda_exec_role" {
   name = "${var.project_name}-lambda-role"
@@ -55,12 +57,12 @@ resource "aws_iam_role_policy_attachment" "attach_ecr_pull" {
 resource "aws_lambda_function" "api_lambda" {
   function_name = "${var.project_name}-api"
   role          = aws_iam_role.lambda_exec_role.arn
-  timeout       = 30
-  memory_size   = 2048 # 2GB RAM
+  timeout       = 300
+  memory_size   = 3008 # 3GB
   package_type  = "Image"
 
   # link to ECR image, use latest tag for initial setup
-  image_uri = "${aws_ecr_repository.app_repo.repository_url}:latest"
+  image_uri = "${aws_ecr_repository.app_repo.repository_url}:v1"
 
   environment {
     variables = {

@@ -13,8 +13,8 @@
 version: 1
 metadata:
   content_hash:
-    win-64: 03f9cf57e05ac544491171a1565fdf2318d995c1be19c24ce5465cbc30e1d1fd
-    linux-64: 08d490ed8ccc7c072562f10db432c961845a386fe497285115f061107e8ecb3f
+    win-64: abd82181dbe4a7c74f7899ed010ade0c315653cc2d17bf611993eb7b84639c8a
+    linux-64: e88bbb14c984ca4e3a2865eede84902bafc8c85f80ca7f8367b1b2859a6d5a76
   channels:
   - url: pytorch
     used_env_vars: []
@@ -3012,10 +3012,10 @@ package:
     vc: '>=14.3,<15'
     vc14_runtime: '>=14.44.35208'
     zstd: '>=1.5.7,<1.6.0a0'
-  url: https://conda.anaconda.org/conda-forge/win-64/libclang13-21.1.7-default_ha2db4b5_2.conda
+  url: https://conda.anaconda.org/conda-forge/win-64/libclang13-21.1.7-default_ha2db4b5_3.conda
   hash:
-    md5: 367cc7b8c22f31a99935b35ff47b4d7e
-    sha256: 11976a22bff823b9993782f9e62fdb68cc951efb74c34ae098742c25f69426c8
+    md5: 9ff0d8534c2a24abbe8f7ca8144147b1
+    sha256: dc97951920471abe7790f1d8f9f76c1a0866289a5de52e27a8c6341800f5421f
   category: main
   optional: false
 - name: libcups
@@ -8211,6 +8211,30 @@ package:
     sha256: a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128
   category: main
   optional: false
+- name: awslambdaric
+  version: 3.1.1
+  manager: pip
+  platform: linux-64
+  dependencies:
+    simplejson: '>=3.20.1'
+    snapshot-restore-py: '>=1.0.0'
+  url: https://files.pythonhosted.org/packages/35/08/42ccefb03d619a163c2c838a43258c22adbeabc061b4e00e4f3a360d98f1/awslambdaric-3.1.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  hash:
+    sha256: 0b30fd0b2e62c46c268eaf316c3bc77ba6d3900caea3c81cdf211952062e118f
+  category: main
+  optional: false
+- name: awslambdaric
+  version: 3.1.1
+  manager: pip
+  platform: win-64
+  dependencies:
+    simplejson: '>=3.20.1'
+    snapshot-restore-py: '>=1.0.0'
+  url: https://files.pythonhosted.org/packages/a3/25/9ae3c97af6dc4628cf8094dd2189a8b97388409870fba1c54f58c64d5766/awslambdaric-3.1.1.tar.gz
+  hash:
+    sha256: 1c1fd30570b9a2c5cc4ccd2151c883312c5eef2dbf759c8e9d29c18cec6de2e8
+  category: main
+  optional: false
 - name: backports-tarfile
   version: 1.2.0
   manager: pip
@@ -9019,6 +9043,26 @@ package:
     sha256: 7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686
   category: main
   optional: false
+- name: simplejson
+  version: 3.20.2
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/b9/8c/8fc2c2734ac9e514124635b25ca8f7e347db1ded4a30417ee41e78e6d61c/simplejson-3.20.2-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  hash:
+    sha256: 6a8f1c307edf5fbf0c6db3396c5d3471409c4a40c7a2a466fbc762f20d46601a
+  category: main
+  optional: false
+- name: simplejson
+  version: 3.20.2
+  manager: pip
+  platform: win-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/dc/b7/94c6049a99e3c04eed2064e91295370b7429e2361188e35a78df562312e0/simplejson-3.20.2-cp39-cp39-win_amd64.whl
+  hash:
+    sha256: 44a6235e09ca5cc41aa5870a952489c06aa4aee3361ae46daa947d8398e57502
+  category: main
+  optional: false
 - name: smmap
   version: 5.0.2
   manager: pip
@@ -9037,6 +9081,26 @@ package:
   url: https://files.pythonhosted.org/packages/04/be/d09147ad1ec7934636ad912901c5fd7667e1c858e19d355237db0d0cd5e4/smmap-5.0.2-py3-none-any.whl
   hash:
     sha256: b30115f0def7d7531d22a0fb6502488d879e75b260a9db4d0819cfb25403af5e
+  category: main
+  optional: false
+- name: snapshot-restore-py
+  version: 1.0.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/10/b8/f9da2457e9dfb5872042202d69b329940527672e20cbfdb26610c09e1d8e/snapshot_restore_py-1.0.0-py3-none-any.whl
+  hash:
+    sha256: 38f99e696793790f54658e71c68c7a8a40cea877c81232b5052383b1301aceba
+  category: main
+  optional: false
+- name: snapshot-restore-py
+  version: 1.0.0
+  manager: pip
+  platform: win-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/10/b8/f9da2457e9dfb5872042202d69b329940527672e20cbfdb26610c09e1d8e/snapshot_restore_py-1.0.0-py3-none-any.whl
+  hash:
+    sha256: 38f99e696793790f54658e71c68c7a8a40cea877c81232b5052383b1301aceba
   category: main
   optional: false
 - name: starlette
