@@ -2,14 +2,14 @@
 
 # ECR repository
 resource "aws_ecr_repository" "app_repo" {
-    name = var.ecr_repo_name
-    image_tag_mutability = "MUTABLE" # allow overwriting 'latest' tag
-    force_delete = true # can delete repo even if it has images
+  name                 = var.ecr_repo_name
+  image_tag_mutability = "MUTABLE" # allow overwriting 'latest' tag
+  force_delete         = false     # can delete repo even if it has images
 
-    # scan images for vulnerabilities on push
-    image_scanning_configuration {
-        scan_on_push = true
-    }
+  # scan images for vulnerabilities on push
+  image_scanning_configuration {
+    scan_on_push = true
+  }
 }
 
 # lifecycle policy for cost management
@@ -22,17 +22,17 @@ resource "aws_ecr_lifecycle_policy" "cleanup_policy" {
       {
         rulePriority = 1
         description  = "Keep only the last 2 tagged images"
-        
+
         selection = {
           tagStatus   = "any"
           countType   = "imageCountMoreThan"
           countNumber = 2
-        } 
+        }
 
         action = {
           type = "expire"
         }
-      } 
+      }
     ]
   })
 }
