@@ -1,6 +1,6 @@
 # Audio-Based Predictive Maintenance for Industrial Machinery (MLOps)
 
-This project implements a full end-to-end MLOps pipeline for classifying the health status of industrial machinery based on audio recordings. The goal is to build a system that can listen to a short audio clip of a fan and determine if it is in a "normal" or "abnormal" condition, demonstrating a realistic workflow from data analysis to model deployment.
+This project implements a full end-to-end MLOps pipeline for classifying the health status of industrial machinery based on audio recordings. The goal is to build a system that can listen to a short audio clip of a fan and determine if it is in a "normal" or "abnormal" condition, demonstrating a realistic workflow from data analysis to model deployment using cloud-native infrastructure.
 
 ## The Core Challenge: Generalization to Unseen Machines
 
@@ -10,6 +10,16 @@ As shown below, the acoustic signature of an "abnormal" sound from one fan (`id_
 
 <p align="center">
   <img src="docs/images/spectrogram_comparison.png" alt="Spectrogram comparison showing data distribution shift" width="800"/>
+</p>
+
+## API Service & Serverless Architecture
+
+The trained production model is served via a **FastAPI** application wrapped in a **Mangum** adapter, allowing it to run as a serverless function on AWS Lambda. The service exposes a single `/predict` endpoint that accepts a `.wav` audio file and returns a JSON response containing the predicted label ("normal" or "abnormal") and a confidence score.
+
+The image below shows a demo of the live application hosted on AWS, correctly classifying a test audio clip.
+
+<p align="center">
+  <img src="docs/images/api_demo.png" alt="Screenshot of the FastAPI /docs page showing a successful prediction" width="800"/>
 </p>
 
 ## Methodology & Key Findings
@@ -23,34 +33,21 @@ To get an honest estimate of real-world performance, a **Leave-One-Group-Out (LO
 The key to improving generalization was identified as a lack of variety in the training data. The final production model was trained with **data augmentation** (`SpecAugment`), which randomly masks time and frequency bands in the spectrograms. This forces the model to learn more robust, generalizable features instead of overfitting to the specific acoustic properties of the training fans.
 
 ### 3. Production Model Performance
-A final production model was trained on all available fan data with data augmentation enabled. This model demonstrated excellent performance on its validation set, achieving an **AUC of 0.99** and a near-perfect precision, indicating an extremely low false-alarm rate. This is the model that will be used for deployment.
+A final production model was trained on all available fan data with data augmentation enabled. This model demonstrated excellent performance on its validation set, achieving an **AUC of 0.99** and a near-perfect precision, indicating an extremely low false-alarm rate. This is the model that was used for deployment.
 
-## API Service & Serverless Architecture
+## Project Status: Completed
 
-The trained production model is served via a **FastAPI** application wrapped in a **Mangum** adapter, allowing it to run as a serverless function on AWS Lambda. The service exposes a single `/predict` endpoint that accepts a `.wav` audio file and returns a JSON response containing the predicted label ("normal" or "abnormal") and a confidence score.
+This project has employed the complete MLOps lifecycle, from initial data exploration to a fully deployed cloud-native application.
 
-The image below shows a demo of the app, as it takes an uploaded wav file of a normally functioning fan of type `id_02` from the dataset, `(00000102.wav)`, as input and returns a prediction that correctly classifies the example as "normal".
+**Key Achievements:**
+*   **Robust ML Pipeline:** Solved a real-world data shift problem using LOGO cross-validation and data augmentation.
+*   **Serverless Migration:** Successfully pivoted from a container-based Azure architecture to a cost-optimized AWS Serverless architecture using Lambda and API Gateway.
+*   **Infrastructure as Code:** Fully defined all AWS resources (ECR, Lambda, API Gateway, IAM Roles) using Terraform.
+*   **Optimization:** Configured AWS Lambda with 3GB memory to handle the cold-start of a large PyTorch container using "Lazy Loading" techniques.
+*   **Containerization:** Built a multi-stage Docker image optimized for Lambda, using `awslambdaric` and `mangum` to bridge the gap between FastAPI and the serverless runtime.
 
-<p align="center">
-  <img src="docs/images/api_demo.png" alt="Screenshot of the FastAPI /docs page showing a successful prediction" width="800"/>
-</p>
-
-## Current Status: AWS Migration & Infrastructure
-
-The project has pivoted to a cloud-native AWS Serverless architecture to optimize for cost and scalability. The application container is being prepared for deployment to AWS Lambda via Amazon ECR.
-
-**Completed Milestones:**
-*   **LOGO Cross-Validation:** Completed a full 4-fold cross-validation to establish a robust, unbiased performance baseline.
-*   **Data Augmentation:** Implemented `SpecAugment` to solve the generalization challenge.
-*   **Production Model:** Trained a final, high-performance model (AUC 0.99).
-*   **Containerization:** Successfully containerized the application using **Docker**.
-*   **Serverless Adaptation:** Integrated `Mangum` adapter to enable FastAPI execution within AWS Lambda.
-*   **Infrastructure as Code (AWS):** Initiated Terraform code for AWS resources, starting with Amazon ECR and Lifecycle Policies.
-
-**Next Steps: Cloud Deployment & Automation**
-*   Provision AWS Lambda and API Gateway using **Terraform**.
-*   Configure **GitHub Actions** to automate the build-and-push workflow to Amazon ECR.
-*   Finalize the end-to-end CI/CD pipeline for automated model deployment.
+**Note on Cloud Deployment:**
+While the Terraform code for the AWS infrastructure is complete and fully functional, the live AWS resources have been destroyed to avoid incurring unnecessary cloud costs. The project is designed to be spun up and down on demand. You can run the application locally using the instructions below.
 
 ## Tech Stack
 
@@ -59,11 +56,11 @@ The project has pivoted to a cloud-native AWS Serverless architecture to optimiz
 -   **Containerization:** Docker
 -   **Infrastructure as Code:** Terraform
 -   **Cloud Provider:** AWS (Lambda, ECR, API Gateway)
--   **CI/CD & Automation:** GitHub Actions
+-   **CI/CD & Automation:** GitHub Actions, Git LFS
 
 ## Getting Started
 
-Follow these instructions to set up and run the project locally if desired, skip ahead to usage if you only want to use the application.
+Follow these instructions to set up and run the project locally.
 
 ### Prerequisites
 
@@ -71,8 +68,8 @@ Follow these instructions to set up and run the project locally if desired, skip
 -   Git LFS ([Install from here](https://git-lfs.github.com/))
 -   Conda for environment management
 -   Docker Desktop ([Install from here](https://www.docker.com/products/docker-desktop/))
--   AWS CLI (Configured with credentials)
--   Terraform
+-   AWS CLI (Optional, for cloud deployment)
+-   Terraform (Optional, for cloud deployment)
 
 ### 1. Clone the Repository
 ```bash
@@ -155,4 +152,7 @@ python src/main.py
 This project is licensed under the MIT License.
 
 ## Acknowledgements
-This project uses the MIMII Dataset. Please cite the original authors if you use this data.
+This project uses the MIMII Dataset. Please cite the original authors if you use this data:
+
+Harsh Purohit, Ryo Tanabe, Kenji Ichige, Takashi Endo, Yuki Nikaido, Kaori Suefusa, and Yohei Kawaguchi, "MIMII Dataset: Sound Dataset for Malfunctioning Industrial Machine Investigation and Inspection," in Proceedings of the 4th Workshop on Detection and Classification of Acoustic Scenes and Events (DCASE), 2019.
+
