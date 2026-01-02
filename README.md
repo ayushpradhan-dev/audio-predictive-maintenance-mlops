@@ -40,21 +40,22 @@ A final production model was trained on all available fan data with data augment
 This project has employed the complete MLOps lifecycle, from initial data exploration to a fully deployed cloud-native application.
 
 **Key Achievements:**
-*   **Robust ML Pipeline:** Solved a real-world data shift problem using LOGO cross-validation and data augmentation.
-*   **Serverless Migration:** Successfully pivoted from a container-based Azure architecture to a cost-optimized AWS Serverless architecture using Lambda and API Gateway.
-*   **Infrastructure as Code:** Fully defined all AWS resources (ECR, Lambda, API Gateway, IAM Roles) using Terraform.
+*   **Serverless Migration:** Implemented a scale to zero cost-optimized AWS Serverless architecture using Lambda and API Gateway.
+*   **Infrastructure as Code:** Fully defined all AWS resources (ECR, Lambda, API Gateway, IAM Roles) using Terraform. Configured an **S3 Remote Backend with Native State Locking** to ensure secure and collaborative state management.
+*   **CI/CD Automation:** Implemented a full CI/CD pipeline using **GitHub Actions**. The workflow automatically builds the Docker image, pushes it to ECR with version tags, and applies Terraform infrastructure updates on every push to the main branch.
 *   **Optimization:** Configured AWS Lambda with 3GB memory to handle the cold-start of a large PyTorch container using "Lazy Loading" techniques.
 *   **Containerization:** Built a multi-stage Docker image optimized for Lambda, using `awslambdaric` and `mangum` to bridge the gap between FastAPI and the serverless runtime.
+*   **Robust ML Pipeline:** Solved a real-world data shift problem using LOGO cross-validation and data augmentation.
 
 **Note on Cloud Deployment:**
-While the Terraform code for the AWS infrastructure is complete and fully functional, the live AWS resources have been destroyed to avoid incurring unnecessary cloud costs. The project is designed to be spun up and down on demand. You can run the application locally using the instructions below.
+While the Terraform code for the AWS infrastructure is complete and fully functional, the live AWS resources have been destroyed to avoid incurring unnecessary cloud costs. The project is designed to be spun up and down on demand via the CI/CD pipeline. You can run the application locally using the instructions below.
 
 ## Tech Stack
 
 -   **Data Analysis & Modeling:** PyTorch, Librosa, Scikit-learn, Pandas
 -   **API Development:** FastAPI, Uvicorn, Mangum (AWS Adapter)
 -   **Containerization:** Docker
--   **Infrastructure as Code:** Terraform
+-   **Infrastructure as Code:** Terraform (S3 Backend)
 -   **Cloud Provider:** AWS (Lambda, ECR, API Gateway)
 -   **CI/CD & Automation:** GitHub Actions, Git LFS
 
@@ -75,7 +76,6 @@ Follow these instructions to set up and run the project locally.
 ```bash
 git clone https://github.com/ayushpradhan-dev/audio-predictive-maintenance-mlops.git
 cd audio-predictive-maintenance-mlops
-```
 
 ### 2. Set Up Git LFS
 Initialize Git LFS to download the model files.
