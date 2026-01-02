@@ -62,7 +62,7 @@ resource "aws_lambda_function" "api_lambda" {
   package_type  = "Image"
 
   # link to ECR image, use latest tag for initial setup
-  image_uri = "${aws_ecr_repository.app_repo.repository_url}:v1"
+  image_uri = "${aws_ecr_repository.app_repo.repository_url}:${var.image_tag}"
 
   environment {
     variables = {

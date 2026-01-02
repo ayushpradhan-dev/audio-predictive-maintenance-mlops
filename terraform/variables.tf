@@ -17,3 +17,9 @@ variable "ecr_repo_name" {
   type        = string
   default     = "audio-predictive-maintenance"
 }
+
+variable "image_tag" {
+  description = "The Docker image tag to deploy (e.g., git commit hash)"
+  type = string
+  default = "latest"
+}

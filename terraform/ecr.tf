@@ -4,7 +4,7 @@
 resource "aws_ecr_repository" "app_repo" {
   name                 = var.ecr_repo_name
   image_tag_mutability = "MUTABLE" # allow tag overwriting
-  force_delete         = false     # can delete repo even if it has images
+  force_delete         = false     # can't delete repo if it has an image
 
   # scan images for vulnerabilities on push
   image_scanning_configuration {
