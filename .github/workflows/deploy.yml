@@ -2,8 +2,17 @@ name: Deploy to AWS
 
 on:
   push:
-     branches:
+    branches:
       - main # triggers on push to main branch
+    
+    paths:
+      - 'src/**'
+      - 'terraform/**'
+      - 'models/**'
+      - 'Dockerfile'
+      - 'conda-linux-64.lock'
+      - '.github/workflows/deploy.yml'
+    
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}

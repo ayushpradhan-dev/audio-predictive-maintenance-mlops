@@ -15,7 +15,8 @@ terraform {
     bucket = "ayush-tfstate-audio-mlops"
     key = "audio-mlops/terraform.tfstate"
     region = "eu-west-1"
-    dynamodb_table = "terraform-locks"
+    # dynamodb_table = "terraform-locks"
+    use_lockfile = true
     encrypt = true
   }
 }
