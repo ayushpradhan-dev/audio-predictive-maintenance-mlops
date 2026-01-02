@@ -36,7 +36,7 @@ jobs:
 
       # login to Amazon ECR
       - name: Login to Amazon ECR
-        id: logic-ecr
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
       # build, tag, and push docker image
